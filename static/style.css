@@ -82,14 +82,6 @@ code {
 	margin-top: 2em ;
 }
 
-img[alt="BTC Logo"],
-img[alt="ETH Logo"],
-img[alt="XMR Logo"] {
-	max-width: 1em ;
-	max-height: 1em ;
-	display: inline ;
-}
-
 @media (pointer: coarse) {
 	li > a {
 	    display: inline-block;
@@ -273,29 +265,5 @@ button#clear-search:hover {
 #tag_ukrainian:before { content: "🇺🇦" ; }
 #tag_vietnamese:before { content: "🇻🇳" ; }
 #tag_wine:before { content: "🍷" ; }
-
-.cryptocontainer {
-    display: flex ;
-    flex-wrap: wrap ;
-    justify-content: center ;
-}
-.cryptoinfo {
-    max-width: 350px ;
-    text-align: center ;
-    padding-left: 10px ;
-    padding-right: 10px ;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-.cryptoinfo code {
-	font-size: small ;
-	overflow-wrap: break-word ;
-}
-.qr {
-    max-height: 150px; ;
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
 
 .js-only { display: none ; }
