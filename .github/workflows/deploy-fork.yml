@@ -1,0 +1,77 @@
+name: Deploy Fork Site
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-fork-site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.repository_owner != 'LukeSmithxyz'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch lugo theme
+        run: git clone --depth 1 https://github.com/lukesmithxyz/lugo.git themes/lugo
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.124.1"
+
+      - name: Build site
+        run: hugo --gc --minify --destination public
+
+      - name: Start ssh-agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Configure known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Resolve remote deploy path
+        id: resolve_target
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          DEPLOY_HOST="${DEPLOY_HOST:-209.182.197.210}"
+          DEPLOY_PORT="${DEPLOY_PORT:-2222}"
+          DEPLOY_USER="${DEPLOY_USER:-virtus12}"
+          DEPLOY_PATH="${DEPLOY_PATH:-/home/${DEPLOY_USER}/cooking.geoffsmiscellany.com}"
+
+          ssh -p "${DEPLOY_PORT}" "${DEPLOY_USER}@${DEPLOY_HOST}" "mkdir -p '${DEPLOY_PATH}'"
+          echo "deploy_host=${DEPLOY_HOST}" >> "$GITHUB_OUTPUT"
+          echo "deploy_user=${DEPLOY_USER}" >> "$GITHUB_OUTPUT"
+          echo "deploy_port=${DEPLOY_PORT}" >> "$GITHUB_OUTPUT"
+          echo "deploy_path=${DEPLOY_PATH}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy with rsync
+        env:
+          DEPLOY_HOST: ${{ steps.resolve_target.outputs.deploy_host }}
+          DEPLOY_USER: ${{ steps.resolve_target.outputs.deploy_user }}
+          DEPLOY_PORT: ${{ steps.resolve_target.outputs.deploy_port }}
+          DEPLOY_PATH: ${{ steps.resolve_target.outputs.deploy_path }}
+        run: |
+          rsync -az --delete \
+            -e "ssh -p ${DEPLOY_PORT}" \
+            public/ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"

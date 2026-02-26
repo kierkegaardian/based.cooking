@@ -7,6 +7,10 @@ There are no ads, trackers or cookies (unless recipes thereof).
 
 This site is compiled and organized with Hugo, using [this very simple theme](https://github.com/lukesmithxyz/lugo).
 
+## Hosting your own fork
+
+For a ready-to-use fork deployment setup (CI validation + SSH deploy + branch protection checklist), see [`docs/FORK_HOSTING.md`](docs/FORK_HOSTING.md).
+
 ## Ways to contribute
 
 - By adding a recipe.

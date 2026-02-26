@@ -13,6 +13,8 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   update:
+    # Only run this legacy flow on the original upstream repository owner.
+    if: github.repository_owner == 'LukeSmithxyz'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
