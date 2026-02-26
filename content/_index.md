@@ -79,7 +79,5 @@ See the story of this site unfold in three videos:
 
 ## It's easy to contribute!
 
-New recipes can be submitted [on Github](https://github.com/lukesmithxyz/based.cooking).
-We are funded by you only, not 20MB of ads or privacy-violating trackers per page.
-
-{{< crypto >}}
+New recipes can be submitted [on GitHub](https://github.com/kierkegaardian/based.cooking).
+Open a pull request and recipe changes will be reviewed before publishing.
