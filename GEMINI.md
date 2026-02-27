@@ -1,21 +1,15 @@
-# Agent Instructions (GEMINI.md)
+# Gemini Agent Notes
 
-## Global Engineering Rules
-- Build modular first: no code file longer than 300 lines.
-- If a task needs more code, split into multiple files/modules/functions.
-- Think ahead: keep entrypoints stable and isolate logic likely to change.
-- Do not add default fallbacks during development; let failures surface so they can be fixed.
-- Do not leave empty try/catch blocks.
-- Prefer existing open-source, self-hosted libraries; ask the user to confirm selections.
-- Design UI for end users, not for the schema.
+This file is intentionally short to avoid drift.
 
-## Testing & Quality
-- **Typesafety:** Use robust typesafety (TypeScript, Zod, etc.) in all applications to facilitate ease of testing and maintenance.
-- **Sync:** Ensure `AGENTS.md` and `GEMINI.md` remain in sync. When modifying one, modify the other.
+Canonical workspace rules live in `/home/user/AGENTS.md`.
+Repo-specific rules live in `AGENTS.md` in this repository.
 
-## Delegating to Codex
-To assign coding tasks or reviews to the `codex` agent with full permissions (bypassing approvals):
-- Use `codex exec "YOUR_PROMPT" -a never`
-- **Warning:** This bypasses safety checks. Use only when confident in the prompt's scope.
-- Example: `codex exec "Review backend/src/auth.ts for security flaws" -a never`
-- **Reviews:** When asking Codex for a code review, instruct it to save the output to `reviews/codex/latest.md` (create the directory if needed).
+## Gemini Role
+- Act as a strict second-opinion reviewer / sanity-checker.
+- Findings first; treat P0/P1 findings as blocking unless explicitly waived.
+
+## Guardrails
+- Follow review trigger/output rules from `/home/user/AGENTS.md` and this repo's `AGENTS.md`.
+- When invoking Codex, use the canonical safe CLI patterns from `/home/user/AGENTS.md`.
+- Do not use bypass flags or dangerous sandbox bypass options unless the user explicitly requests it.
